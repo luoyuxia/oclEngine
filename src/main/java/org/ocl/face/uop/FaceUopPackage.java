@@ -19,13 +19,10 @@ public interface FaceUopPackage extends EPackage {
     interface Literals {
         EClass ITEM = eINSTANCE.getItem();
         EClass ALIAS = eINSTANCE.getAlias();
-        EClass ALIAS_COPY = eINSTANCE.getAliasCopy();
     }
 
 
     EClass getAlias();
 
     EClass getItem();
-
-    EClass getAliasCopy();
 }

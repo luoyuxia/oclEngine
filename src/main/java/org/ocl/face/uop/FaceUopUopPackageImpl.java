@@ -52,9 +52,6 @@ public class FaceUopUopPackageImpl extends EPackageImpl implements FaceUopPackag
         initEAttribute(getAlias_name(), ecorePackage.getEString(), "name", null, 0, 1,
                 Alias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(aliasCopyEClass, AliasCopy.class, "AliasCopy", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getAlias_CopyName(), ecorePackage.getEString(), "name", null, 0, 1,
-                AliasCopy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         createResource(eNS_URI);
     }
 
@@ -62,9 +59,6 @@ public class FaceUopUopPackageImpl extends EPackageImpl implements FaceUopPackag
         return (EAttribute)aliasEClass.getEStructuralFeature(0);
     }
 
-    public EAttribute getAlias_CopyName() {
-        return (EAttribute)aliasCopyEClass.getEStructuralFeature(0);
-    }
 
     private static boolean isInited = false;
 
@@ -90,8 +84,4 @@ public class FaceUopUopPackageImpl extends EPackageImpl implements FaceUopPackag
         return itemEClass;
     }
 
-    @Override
-    public EClass getAliasCopy() {
-        return aliasCopyEClass;
-    }
 }
