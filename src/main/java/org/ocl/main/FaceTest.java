@@ -8,8 +8,8 @@ import org.eclipse.ocl.ecore.Constraint;
 import org.eclipse.ocl.ecore.EcoreEnvironmentFactory;
 import org.eclipse.ocl.ecore.OCL;
 import org.eclipse.ocl.expressions.OCLExpression;
-import org.ocl.face.FaceFactory;
-import org.ocl.face.FacePackage;
+import org.ocl.face.uop.FaceUopFactory;
+import org.ocl.face.uop.FaceUopPackage;
 import org.ocl.face.uop.Alias;
 
 import java.io.InputStream;
@@ -17,9 +17,9 @@ import java.util.List;
 
 public class FaceTest {
     public static void main(String[] args) throws Exception {
-        Alias alias = FaceFactory.eINSTANCE.createAlias();
+        Alias alias = FaceUopFactory.eINSTANCE.createAlias();
         EPackage.Registry registry = new EPackageRegistryImpl();
-        registry.put(FacePackage.eNS_PREFIX, FacePackage.eINSTANCE);
+        registry.put(FaceUopPackage.eNS_PREFIX, FaceUopPackage.eINSTANCE);
         EcoreEnvironmentFactory environmentFactory = new EcoreEnvironmentFactory(registry);
         OCL ocl = OCL.newInstance(environmentFactory);
 

@@ -1,6 +1,6 @@
 import face : 'http://www.opengroup.us/face/1.0#/'
 
-package face
+package face:conceptual
 
   context Element
   

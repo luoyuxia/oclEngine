@@ -2,6 +2,7 @@ package org.ocl.face;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.ocl.face.uop.FaceUopPackage;
 
 public abstract class ItemImpl extends EObjectImpl implements Item {
     protected ItemImpl() {
@@ -10,6 +11,6 @@ public abstract class ItemImpl extends EObjectImpl implements Item {
 
     @Override
     protected EClass eStaticClass() {
-        return FacePackage.Literals.ITEM;
+        return FaceUopPackage.Literals.ITEM;
     }
 }

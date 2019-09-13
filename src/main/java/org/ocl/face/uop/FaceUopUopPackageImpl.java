@@ -1,31 +1,31 @@
-package org.ocl.face;
+package org.ocl.face.uop;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-import org.ocl.face.uop.Alias;
 
-public class FacePackageImpl extends EPackageImpl implements FacePackage{
+public class FaceUopUopPackageImpl extends EPackageImpl implements FaceUopPackage {
     private EClass aliasEClass = null;
     private EClass itemEClass = null;
+    private EClass aliasCopyEClass = null;
 
-    private FacePackageImpl() {
-        super(eNS_URI, FaceFactoryImpl.eINSTANCE);
+    private FaceUopUopPackageImpl() {
+        super(eNS_URI, FaceUopFactoryImpl.eINSTANCE);
     }
 
-    public static FacePackage init() {
+    public static FaceUopPackage init() {
         if (isInited)
-            return (FacePackage) Registry.INSTANCE.getEPackage(FacePackage.eNS_URI);
+            return (FaceUopPackage) Registry.INSTANCE.getEPackage(FaceUopPackage.eNS_URI);
         Object registeredFacePackage = EPackage.Registry.INSTANCE.get(eNS_URI);
-        FacePackageImpl theFacePackage = registeredFacePackage instanceof FacePackageImpl ? (FacePackageImpl) registeredFacePackage : new FacePackageImpl();
+        FaceUopUopPackageImpl theFacePackage = registeredFacePackage instanceof FaceUopUopPackageImpl ? (FaceUopUopPackageImpl) registeredFacePackage : new FaceUopUopPackageImpl();
         isInited = true;
         theFacePackage.createPackageContents();
 
         theFacePackage.initializePackageContents();
 
         theFacePackage.freeze();
-        EPackage.Registry.INSTANCE.put(FacePackage.eNS_URI, theFacePackage);
+        EPackage.Registry.INSTANCE.put(FaceUopPackage.eNS_URI, theFacePackage);
         return theFacePackage;
     }
 
@@ -35,6 +35,9 @@ public class FacePackageImpl extends EPackageImpl implements FacePackage{
 
         aliasEClass = createEClass(ALIAS);
         createEAttribute(aliasEClass, ALIAS_NAME);
+
+        aliasCopyEClass = createEClass(ALIAS_COPY);
+        createEAttribute(aliasCopyEClass, ALIAS_COPY_NAME);
     }
 
     public void initializePackageContents() {
@@ -49,11 +52,18 @@ public class FacePackageImpl extends EPackageImpl implements FacePackage{
         initEAttribute(getAlias_name(), ecorePackage.getEString(), "name", null, 0, 1,
                 Alias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(aliasCopyEClass, AliasCopy.class, "AliasCopy", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAlias_CopyName(), ecorePackage.getEString(), "name", null, 0, 1,
+                AliasCopy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         createResource(eNS_URI);
     }
 
     public EAttribute getAlias_name() {
         return (EAttribute)aliasEClass.getEStructuralFeature(0);
+    }
+
+    public EAttribute getAlias_CopyName() {
+        return (EAttribute)aliasCopyEClass.getEStructuralFeature(0);
     }
 
     private static boolean isInited = false;
@@ -78,5 +88,10 @@ public class FacePackageImpl extends EPackageImpl implements FacePackage{
 
     public EClass getItem() {
         return itemEClass;
+    }
+
+    @Override
+    public EClass getAliasCopy() {
+        return aliasCopyEClass;
     }
 }

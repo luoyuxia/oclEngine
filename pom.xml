@@ -23,24 +23,36 @@
             <version>3.3.0-v20130520-1222</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.eclipse.ocl.examples/library -->
-        <dependency>
-            <groupId>org.eclipse.ocl.examples</groupId>
-            <artifactId>library</artifactId>
-            <version>3.2.0-v20120502-1416</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.eclipse.ocl.examples/common -->
-        <dependency>
-            <groupId>org.eclipse.ocl.examples</groupId>
-            <artifactId>common</artifactId>
-            <version>3.2.0-v20120411-1432</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.emf/org.eclipse.emf.common -->
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.common</artifactId>
             <version>2.15.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 </project>

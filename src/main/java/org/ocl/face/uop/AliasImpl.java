@@ -4,7 +4,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.ocl.extlibrary.impl.ItemImpl;
-import org.ocl.face.FacePackage;
 
 public class AliasImpl extends ItemImpl implements Alias {
     protected static final String NAME_DEFAULT = null;
@@ -18,20 +17,20 @@ public class AliasImpl extends ItemImpl implements Alias {
         name = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FacePackage.ALIAS_NAME,
+                    Notification.SET, FaceUopPackage.ALIAS_NAME,
                     oldName, name));
         }
     }
 
     @Override
     protected EClass eStaticClass() {
-        return FacePackage.Literals.ALIAS;
+        return FaceUopPackage.Literals.ALIAS;
     }
 
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case FacePackage.ALIAS_NAME:
+            case FaceUopPackage.ALIAS_NAME:
                 return getName();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -40,7 +39,7 @@ public class AliasImpl extends ItemImpl implements Alias {
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case FacePackage.ALIAS_NAME:
+            case FaceUopPackage.ALIAS_NAME:
                 setName((String)newValue);
                 return;
         }
