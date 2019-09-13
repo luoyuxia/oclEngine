@@ -1,0 +1,82 @@
+import face : 'http://www.opengroup.us/face/1.0#/'
+
+package face::uop
+
+  context Alias
+	
+	/*
+	 * Ensure that alias name does not conflict with
+	 * a reserved word in IDL or FACE supported programming
+	 * language.
+	*/
+	
+    inv aliasNameNotReservedWord:
+	  let name: String = self.name.toLower() in
+		name <> 'abstract' and
+		name <> 'any' and
+		name <> 'attribute' and
+		name <> 'boolean' and
+		name <> 'case' and
+		name <> 'char' and
+		name <> 'component' and
+		name <> 'const' and
+		name <> 'consumes' and
+		name <> 'context' and
+		name <> 'custom' and
+		name <> 'default' and
+		name <> 'double' and
+		name <> 'emits' and
+		name <> 'enum' and
+		name <> 'eventtype' and
+		name <> 'exception' and
+		name <> 'factory' and
+		name <> 'false' and
+		name <> 'finder' and
+		name <> 'fixed' and
+		name <> 'float' and
+		name <> 'getraises' and
+		name <> 'home' and
+		name <> 'import' and
+		name <> 'in' and
+		name <> 'inout' and
+		name <> 'interface' and
+		name <> 'local' and
+		name <> 'long' and
+		name <> 'manages' and
+		name <> 'module' and
+		name <> 'multiple' and
+		name <> 'native' and
+		name <> 'object' and
+		name <> 'octet' and
+		name <> 'oneway' and
+		name <> 'out' and
+		name <> 'primarykey' and
+		name <> 'private' and
+		name <> 'provides' and
+		name <> 'public' and
+		name <> 'publishes' and
+		name <> 'raises' and
+		name <> 'readonly' and
+		name <> 'sequence' and
+		name <> 'setraises' and
+		name <> 'short' and
+		name <> 'string' and
+		name <> 'struct' and
+		name <> 'supports' and
+		name <> 'switch' and
+		name <> 'true' and
+		name <> 'truncatable' and
+		name <> 'typedef' and
+		name <> 'typeid' and
+		name <> 'typeprefix' and
+		name <> 'union' and
+		name <> 'unsigned' and
+		name <> 'uses' and
+		name <> 'valuebase' and
+		name <> 'valuetype' and
+		name <> 'void' and
+		name <> 'wchar' and
+		name <> 'wstring'
+
+
+endpackage

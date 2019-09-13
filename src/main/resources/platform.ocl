@@ -1,0 +1,428 @@
+import face : 'http://www.opengroup.us/face/1.0#/'
+
+package face::platform
+
+  context Element
+    /*
+     * Every face::platform::Element in the FACE data model shall 
+     * have a unique name
+    */
+  	inv hasUniqueName:
+  	  let platformElements: Set(face::platform::Element) =
+  	  	face::platform::Element.allInstances() in
+  	  let otherPlatformElements: Set(face::platform::Element) =
+  	  	platformElements->excluding(self) in
+  	  not otherPlatformElements->collect(name)->exists(e | e = self.name)
+  	  
+  context Composition
+	/*
+	 * Ensure that when an element realizes another element, the 
+	 * upper and lower bounds of the realized entity match those 
+	 * of the realizing entity. 
+	*/
+	inv platformLowerBoundEqualsLogical:
+		let realizedLogicalComposition: face::logical::Composition = self.realizes in
+		self.lowerBound = realizedLogicalComposition.lowerBound
+		
+	inv platformUpperBoundEqualsLogical:
+		let realizedLogicalComposition: face::logical::Composition = self.realizes in
+		self.upperBound = realizedLogicalComposition.upperBound
+		
+	/* A platform entity composition hierarchy must be consistent 
+	 * with the composition hierarchy of the logical entity 
+	 * that it realizes. The platform value types must correspond
+	 * with the logical measurements and information elements.
+	*/
+	inv platformEntityConsistentWithLogical:
+		let realizedComposition: face::logical::Composition = self.realizes in
+		let type: face::platform::ComposableElement = self.type in
+		if type = null then
+			false
+		else
+		if type.oclIsKindOf(face::platform::Entity) then
+			let entityType: face::platform::Entity = type.oclAsType(face::platform::Entity) in
+			let logicalType: face::logical::Entity = entityType.realizes in
+			logicalType = realizedComposition.type
+		else
+		if type.oclIsKindOf(face::platform::IDLPrimitive) then
+			let idlType: face::platform::IDLPrimitive = type.oclAsType(face::platform::IDLPrimitive) in
+			let logicalType: face::logical::ValueElement = idlType.realizes in
+			logicalType = realizedComposition.type
+		else
+		if type.oclIsKindOf(face::platform::IDLStruct) then
+			let idlType: face::platform::IDLStruct = type.oclAsType(face::platform::IDLStruct) in
+			let logicalType: face::logical::ValueElement = idlType.realizes in
+			logicalType = realizedComposition.type
+		else
+			false
+		endif
+		endif
+		endif
+		endif
+		
+	/*
+	 * Ensure that composition rolename does not conflict with
+	 * a reserved word in IDL or FACE supported programming
+	 * language.
+	*/
+	
+	inv compositionNameNotReservedWord:
+    	let name: String = self.rolename.toLower() in
+		name <> 'abstract' and
+		name <> 'any' and
+		name <> 'attribute' and
+		name <> 'boolean' and
+		name <> 'case' and
+		name <> 'char' and
+		name <> 'component' and
+		name <> 'const' and
+		name <> 'consumes' and
+		name <> 'context' and
+		name <> 'custom' and
+		name <> 'default' and
+		name <> 'double' and
+		name <> 'emits' and
+		name <> 'enum' and
+		name <> 'eventtype' and
+		name <> 'exception' and
+		name <> 'factory' and
+		name <> 'false' and
+		name <> 'finder' and
+		name <> 'fixed' and
+		name <> 'float' and
+		name <> 'getraises' and
+		name <> 'home' and
+		name <> 'import' and
+		name <> 'in' and
+		name <> 'inout' and
+		name <> 'interface' and
+		name <> 'local' and
+		name <> 'long' and
+		name <> 'manages' and
+		name <> 'module' and
+		name <> 'multiple' and
+		name <> 'native' and
+		name <> 'object' and
+		name <> 'octet' and
+		name <> 'oneway' and
+		name <> 'out' and
+		name <> 'primarykey' and
+		name <> 'private' and
+		name <> 'provides' and
+		name <> 'public' and
+		name <> 'publishes' and
+		name <> 'raises' and
+		name <> 'readonly' and
+		name <> 'sequence' and
+		name <> 'setraises' and
+		name <> 'short' and
+		name <> 'string' and
+		name <> 'struct' and
+		name <> 'supports' and
+		name <> 'switch' and
+		name <> 'true' and
+		name <> 'truncatable' and
+		name <> 'typedef' and
+		name <> 'typeid' and
+		name <> 'typeprefix' and
+		name <> 'union' and
+		name <> 'unsigned' and
+		name <> 'uses' and
+		name <> 'valuebase' and
+		name <> 'valuetype' and
+		name <> 'void' and
+		name <> 'wchar' and
+		name <> 'wstring'
+		
+  context Entity
+  	        
+    /* 
+     * Every face::platform::Composition within the scope
+     * of an Entity must have a unique name
+    */
+    inv allCompositionsHaveUniqueRolename:
+      self->collect(composition)->isUnique(rolename)
+      
+  	/*
+	 * Ensure that entity name does not conflict with
+	 * a reserved word in IDL or FACE supported programming
+	 * language.
+	*/
+	
+    inv entityNameNotReservedWord:
+    	let name: String = self.name.toLower() in
+		name <> 'abstract' and
+		name <> 'any' and
+		name <> 'attribute' and
+		name <> 'boolean' and
+		name <> 'case' and
+		name <> 'char' and
+		name <> 'component' and
+		name <> 'const' and
+		name <> 'consumes' and
+		name <> 'context' and
+		name <> 'custom' and
+		name <> 'default' and
+		name <> 'double' and
+		name <> 'emits' and
+		name <> 'enum' and
+		name <> 'eventtype' and
+		name <> 'exception' and
+		name <> 'factory' and
+		name <> 'false' and
+		name <> 'finder' and
+		name <> 'fixed' and
+		name <> 'float' and
+		name <> 'getraises' and
+		name <> 'home' and
+		name <> 'import' and
+		name <> 'in' and
+		name <> 'inout' and
+		name <> 'interface' and
+		name <> 'local' and
+		name <> 'long' and
+		name <> 'manages' and
+		name <> 'module' and
+		name <> 'multiple' and
+		name <> 'native' and
+		name <> 'object' and
+		name <> 'octet' and
+		name <> 'oneway' and
+		name <> 'out' and
+		name <> 'primarykey' and
+		name <> 'private' and
+		name <> 'provides' and
+		name <> 'public' and
+		name <> 'publishes' and
+		name <> 'raises' and
+		name <> 'readonly' and
+		name <> 'sequence' and
+		name <> 'setraises' and
+		name <> 'short' and
+		name <> 'string' and
+		name <> 'struct' and
+		name <> 'supports' and
+		name <> 'switch' and
+		name <> 'true' and
+		name <> 'truncatable' and
+		name <> 'typedef' and
+		name <> 'typeid' and
+		name <> 'typeprefix' and
+		name <> 'union' and
+		name <> 'unsigned' and
+		name <> 'uses' and
+		name <> 'valuebase' and
+		name <> 'valuetype' and
+		name <> 'void' and
+		name <> 'wchar' and
+		name <> 'wstring'
+      
+  context Association
+    /* 
+     * Every face::logical::Characteristic within the scope
+     * of an Association must have a unique name
+    */
+    inv allCharacteristicsHaveUniqueRolename:
+      let compositions = 
+      	self->collect(composition)->collect(c|c.oclAsType(face::platform::Characteristic)) in
+      let associatedEntities = 
+      	self->collect(associatedEntity)->collect(c|c.oclAsType(face::platform::Characteristic)) in
+	  let characteristics: Set(face::platform::Characteristic) = 
+	  	compositions->union(associatedEntities) in
+	  characteristics->isUnique(rolename)
+
+  context View
+    
+    /*
+	 * Ensure that view name does not conflict with
+	 * a reserved word in IDL or FACE supported programming
+	 * language.
+	*/
+	
+    inv viewNameNotReservedWord:
+    	let name: String = self.name.toLower() in
+		name <> 'abstract' and
+		name <> 'any' and
+		name <> 'attribute' and
+		name <> 'boolean' and
+		name <> 'case' and
+		name <> 'char' and
+		name <> 'component' and
+		name <> 'const' and
+		name <> 'consumes' and
+		name <> 'context' and
+		name <> 'custom' and
+		name <> 'default' and
+		name <> 'double' and
+		name <> 'emits' and
+		name <> 'enum' and
+		name <> 'eventtype' and
+		name <> 'exception' and
+		name <> 'factory' and
+		name <> 'false' and
+		name <> 'finder' and
+		name <> 'fixed' and
+		name <> 'float' and
+		name <> 'getraises' and
+		name <> 'home' and
+		name <> 'import' and
+		name <> 'in' and
+		name <> 'inout' and
+		name <> 'interface' and
+		name <> 'local' and
+		name <> 'long' and
+		name <> 'manages' and
+		name <> 'module' and
+		name <> 'multiple' and
+		name <> 'native' and
+		name <> 'object' and
+		name <> 'octet' and
+		name <> 'oneway' and
+		name <> 'out' and
+		name <> 'primarykey' and
+		name <> 'private' and
+		name <> 'provides' and
+		name <> 'public' and
+		name <> 'publishes' and
+		name <> 'raises' and
+		name <> 'readonly' and
+		name <> 'sequence' and
+		name <> 'setraises' and
+		name <> 'short' and
+		name <> 'string' and
+		name <> 'struct' and
+		name <> 'supports' and
+		name <> 'switch' and
+		name <> 'true' and
+		name <> 'truncatable' and
+		name <> 'typedef' and
+		name <> 'typeid' and
+		name <> 'typeprefix' and
+		name <> 'union' and
+		name <> 'unsigned' and
+		name <> 'uses' and
+		name <> 'valuebase' and
+		name <> 'valuetype' and
+		name <> 'void' and
+		name <> 'wchar' and
+		name <> 'wstring'
+
+  context CharacteristicProjection
+    
+	/* 
+     * CharacteristicProjection must have a valid path format.
+    */
+	inv characteristicProjectionValidFormat:
+	
+		self.path <> null implies 
+		
+		--remove all entity projection substrings (e.g. ".description")
+		let pathTmp1 = self.path.replaceAll('\\.[_a-zA-Z0-9]+', '') in
+		
+		--remove all entity projection substrings (e.g. "->description[A1]")
+		let pathTmp2 = pathTmp1.replaceAll('->[_a-zA-Z0-9]+\\[[_a-zA-Z0-9]+\\]', '') in
+			
+		pathTmp2.size() = 0
+		
+    /*
+	 * Ensure that characteristic projection rolename does 
+	 * not conflict with a reserved word in IDL or FACE 
+	 * supported programming language.
+	*/
+	
+    inv characteristicProjectionNameNotReservedWord:
+    	let name: String = self.rolename.toLower() in
+		name <> 'abstract' and
+		name <> 'any' and
+		name <> 'attribute' and
+		name <> 'boolean' and
+		name <> 'case' and
+		name <> 'char' and
+		name <> 'component' and
+		name <> 'const' and
+		name <> 'consumes' and
+		name <> 'context' and
+		name <> 'custom' and
+		name <> 'default' and
+		name <> 'double' and
+		name <> 'emits' and
+		name <> 'enum' and
+		name <> 'eventtype' and
+		name <> 'exception' and
+		name <> 'factory' and
+		name <> 'false' and
+		name <> 'finder' and
+		name <> 'fixed' and
+		name <> 'float' and
+		name <> 'getraises' and
+		name <> 'home' and
+		name <> 'import' and
+		name <> 'in' and
+		name <> 'inout' and
+		name <> 'interface' and
+		name <> 'local' and
+		name <> 'long' and
+		name <> 'manages' and
+		name <> 'module' and
+		name <> 'multiple' and
+		name <> 'native' and
+		name <> 'object' and
+		name <> 'octet' and
+		name <> 'oneway' and
+		name <> 'out' and
+		name <> 'primarykey' and
+		name <> 'private' and
+		name <> 'provides' and
+		name <> 'public' and
+		name <> 'publishes' and
+		name <> 'raises' and
+		name <> 'readonly' and
+		name <> 'sequence' and
+		name <> 'setraises' and
+		name <> 'short' and
+		name <> 'string' and
+		name <> 'struct' and
+		name <> 'supports' and
+		name <> 'switch' and
+		name <> 'true' and
+		name <> 'truncatable' and
+		name <> 'typedef' and
+		name <> 'typeid' and
+		name <> 'typeprefix' and
+		name <> 'union' and
+		name <> 'unsigned' and
+		name <> 'uses' and
+		name <> 'valuebase' and
+		name <> 'valuetype' and
+		name <> 'void' and
+		name <> 'wchar' and
+		name <> 'wstring'
+		
+	context IDLComposition
+		/* A platform idl struct composition hierarchy must be consistent 
+		 * with the composition hierarchy of the logical element 
+		 * that it realizes. The platform value types must correspond
+		 * with the logical measurements and information elements.
+		*/
+		inv idlStructConsistentWithLogical:
+			let realizedComposition: face::logical::MeasurementComposition = self.realizes in
+			let type: face::platform::ComposableElement = self.type in
+			if type = null then
+				false
+			else
+			if type.oclIsKindOf(face::platform::IDLPrimitive) then
+				let idlType: face::platform::IDLPrimitive = type.oclAsType(face::platform::IDLPrimitive) in
+				let logicalType: face::logical::ValueElement = idlType.realizes in
+				logicalType = realizedComposition.type
+			else
+			if type.oclIsKindOf(face::platform::IDLStruct) then
+				let idlType: face::platform::IDLStruct = type.oclAsType(face::platform::IDLStruct) in
+				let logicalType: face::logical::ValueElement = idlType.realizes in
+				logicalType = realizedComposition.type
+			else
+				false
+			endif
+			endif
+			endif
+		
+endpackage

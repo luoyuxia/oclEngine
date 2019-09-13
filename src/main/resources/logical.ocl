@@ -1,0 +1,129 @@
+import face : 'http://www.opengroup.us/face/1.0#/'
+
+package face::logical
+
+  context Element
+    /* 
+     * Every face::logical::Element except constraints in the FACE data model shall 
+     * have a unique name
+    */
+  	inv hasUniqueName:
+  	  if self.oclIsKindOf(face::logical::Constraint)
+  	  then
+  	  	  -- do not check name on Constraint specification
+  	  	  true
+	  else
+	  	  -- get all instances of face::logical::Element
+	  	  let logicalElements: Set(face::logical::Element) =
+	  	  	face::logical::Element.allInstances() in
+	  	  let otherLogicalElements: Set(face::logical::Element) =
+	  	  	logicalElements->excluding(self) in
+	  	  not otherLogicalElements->collect(name)->exists(e | e = self.name)
+	  endif
+
+  context Entity
+    /* 
+     * Every face::logical::Composition within the scope
+     * of an Entity must have a unique name
+    */
+    inv allCompositionsHaveUniqueRolename:
+      self->collect(composition)->isUnique(rolename)
+      
+  context Association
+    /* 
+     * Every face::logical::Characteristic within the scope
+     * of an Association must have a unique name
+    */
+    inv allCharacteristicsHaveUniqueRolename:
+      let compositions = 
+      	self->collect(composition)->collect(c|c.oclAsType(face::logical::Characteristic)) in
+      let associatedEntities = 
+      	self->collect(associatedEntity)->collect(c|c.oclAsType(face::logical::Characteristic)) in
+	  let characteristics: Set(face::logical::Characteristic) = 
+	  	compositions->union(associatedEntities) in
+	  characteristics->isUnique(rolename)
+      
+  context Composition
+	/*
+	 * Ensure that when an element realizes another element, the 
+	 * upper and lower bounds of the realized entity match those 
+	 * of the realizing entity. 
+	*/
+	inv logicalLowerBoundEqualsConceptual:
+		let realizedComposition: face::conceptual::Composition = self.realizes in
+		self.lowerBound = realizedComposition.lowerBound
+		
+	inv logicalUpperBoundEqualsConceptual:
+		let realizedComposition: face::conceptual::Composition = self.realizes in
+		self.upperBound = realizedComposition.upperBound
+
+	/* A logical entity composition hierarchy must be consistent 
+	 * with the composition hierarchy of the conceptual entity 
+	 * that it realizes. The logical measurements must correspond
+	 * with the conceptual observables.
+	*/
+	inv logicalEntityConsistentWithConceptual:
+		let realizedComposition: face::conceptual::Composition = self.realizes in
+		let type: face::logical::ComposableElement = self.type in
+		if type = null then
+			false
+		else
+		if type.oclIsKindOf(face::logical::Entity) then
+			let entityType: face::logical::Entity = type.oclAsType(face::logical::Entity) in
+			let conceptualType: face::conceptual::Entity = entityType.realizes in
+			conceptualType = realizedComposition.type
+		else
+		if type.oclIsKindOf(face::logical::Measurement) then
+			let measurementType: face::logical::Measurement = type.oclAsType(face::logical::Measurement) in
+			let conceptualType: face::conceptual::Observable = measurementType.realizes in
+			conceptualType = realizedComposition.type
+		else
+		if type.oclIsKindOf(face::logical::InformationElement) then
+			let ieType: face::logical::InformationElement = type.oclAsType(face::logical::InformationElement) in
+			let conceptualType: face::conceptual::InformationElement = ieType.realizes in
+			conceptualType = realizedComposition.type
+		else
+			false
+		endif
+		endif
+		endif
+		endif
+
+  context CharacteristicProjection
+	/* 
+     * CharacteristicProjection must have a valid path format.
+    */
+	inv characteristicProjectionValidFormat:
+	
+		self.path <> null implies 
+		
+		--remove all entity projection substrings (e.g. ".description")
+		let pathTmp1 = self.path.replaceAll('\\.[_a-zA-Z0-9]+', '') in
+		
+		--remove all entity projection substrings (e.g. "->description[A1]")
+		let pathTmp2 = pathTmp1.replaceAll('->[_a-zA-Z0-9]+\\[[_a-zA-Z0-9]+\\]', '') in
+			
+		pathTmp2.size() = 0
+		
+  context Conversion
+    /*
+     * A face::logical::Conversion shall associate two 
+     * face::logical::ConvertableElement that are of the same metaclass 
+     * (e.g. only Unit to Unit or FrameOfReference to 
+     * FrameOfReference conversions are allowed). 
+    */
+    inv unitConvertsToUnit: 
+      self.source.oclIsTypeOf(Unit) implies 
+        self.destination.oclIsTypeOf(Unit)
+    inv frameOfReferenceConvertsToFrameOfReference: 
+      self.source.oclIsTypeOf(FrameOfReference) implies 
+        self.destination.oclIsTypeOf(FrameOfReference)
+        
+  context InformationElement
+    /* 
+     * Information Elements will be deprecated in future versions of FACE.
+    */
+    inv informationElementDepricated: 
+      false
+      
+endpackage

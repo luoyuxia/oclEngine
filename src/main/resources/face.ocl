@@ -1,0 +1,6 @@
+import face : 'http://www.opengroup.us/face/1.0#/'
+
+include 'conceptual.ocl'
+include 'logical.ocl'
+include 'platform.ocl'
+include 'uop.ocl'

@@ -1,0 +1,379 @@
+import face : 'http://www.opengroup.us/face/1.0#/'
+
+package face
+
+  context Element
+  
+    /* 
+     * 'tokenizeString' will return a sequence of strings that have been
+     * split from the input string by the delimiter. 
+     * Assumes single character delimiter.
+    */
+    static def: tokenizeString(str : String, delimiter : String) : Sequence(String) =
+      let i : Integer = str.indexOf(delimiter) in
+      if i > 1
+      then
+          let token : String = str.substring(1, i-1) in
+          if i = str.size()
+          then
+            Sequence{token}
+          else
+            let remainder : String = str.substring(i+1, str.size()) in
+            let remainderTokens : Sequence(String) = tokenizeString(remainder, delimiter) in
+            remainderTokens->prepend(token)
+          endif
+      else
+        if i = str.size()
+        then
+          Sequence{}
+        else
+          if i = 1
+          then
+            let remainder : String = str.substring(i+1, str.size()) in
+            self.tokenizeString(remainder, delimiter)
+          else -- i <= 0
+            Sequence{str}
+          endif
+        endif
+      endif
+
+endpackage
+
+package face::conceptual
+
+  context Element
+    /* 
+     * Every face::conceptual::Element in the FACE data model shall 
+     * have a unique name
+    */
+  	inv hasUniqueName:
+  	  let conceptualElements: Set(face::conceptual::Element) =
+  	  	face::conceptual::Element.allInstances() in
+  	  let otherConceptualElements: Set(face::conceptual::Element) =
+  	  	conceptualElements->excluding(self) in
+  	  not otherConceptualElements->collect(name)->exists(e | e = self.name)
+
+  context Entity
+		
+    /*
+     * A helper method that returns the Identity of an Entity
+    */
+	def: getEntityIdentity() : Bag(OclAny) =
+		let compositions : Bag(face::conceptual::Characteristic) =
+			self->collect(composition)
+		in
+		
+		let characteristics : Bag(face::conceptual::Characteristic) =
+			if self.oclIsTypeOf(face::conceptual::Association)
+			then
+				self.oclAsType(face::conceptual::Association)->
+					collect(associationEnd.oclAsType(face::conceptual::Characteristic))->
+					union(compositions)
+			else
+				compositions
+			endif
+		in
+		
+		characteristics->collect(c | c.getIdentityContribution())
+	
+    /*
+     * The full composition hierarchy of each conceptual Entity shall be 
+     * unique.  Uniqueness is determined by number, multiplicity and 
+     * type of its composed ComposableElement.
+    */
+	inv entityIsUnique:	  
+	  let ceIdentity: Bag(OclAny) = 
+	    self.getEntityIdentity() in 
+	    face::conceptual::Entity.allInstances()->excluding(self)
+	      ->forAll(ce | ce.getEntityIdentity() <> ceIdentity
+	    	) 
+  
+    /* 
+     * Every face::conceptual::Entity in the FACE data model shall contain 
+     * a face::conceptual::InformationElement named 'UniqueIDType'.
+    */
+    inv hasUniqueID: 
+      self->collect(composition)->collect(type)
+        ->exists(a | a.oclIsTypeOf(Observable) 
+          and a.name = 'UniqueIdentifier'
+        )
+        
+    /* 
+     * Every face::conceptual::Composition within the scope
+     * of an Entity must have a unique name
+    */
+    inv allCompositionsHaveUniqueRolename:
+      self->collect(composition)->isUnique(rolename)
+    
+    /*
+     * A conceptual Entity must be composed from conceptual 
+     * BasisElements or other conceptual Entities which 
+     * are composed of conceptual BasisElements.
+    */
+    inv entityConstructed:
+      let ceClosure = self->closure(ce | 
+        let types = ce->collect(composition)->collect(type)->asSet() 
+          in
+        let entityTypes = types
+          ->select(t | t.oclIsTypeOf(face::conceptual::Entity)) in
+        entityTypes->collect(t | t.oclAsType(face::conceptual::Entity))
+      ) in 
+      not ceClosure->includes(self)
+      
+  context Association
+    /* 
+     * Every face::conceptual::Characteristic within the scope
+     * of an Association must have a unique name
+    */
+    inv allCharacteristicsHaveUniqueRolename:
+      let compositions = 
+      	self->collect(composition)->collect(c|c.oclAsType(face::conceptual::Characteristic)) in
+      let associatedEntities = 
+      	self->collect(associationEnd)->collect(c|c.oclAsType(face::conceptual::Characteristic)) in
+	  let characteristics: Set(face::conceptual::Characteristic) = 
+	  	compositions->union(associatedEntities) in
+	  characteristics->isUnique(rolename)
+	  
+  context View
+  
+    /*
+     * A helper method that returns the Identity of an Entity
+    */
+	def: getViewIdentity() : Bag(OclAny) =
+		self->collect(characteristic)->collect(c | c.getIdentityContribution())
+  
+    /*
+     * The each View shall be unique.  Uniqueness is determined by 
+     * number, multiplicity, type and context of its ProjectedCharacteristics.
+    */
+    inv viewIsUnique: 
+	  let cvIdentity: Bag(OclAny) = 
+	    self.getViewIdentity() in 
+	    face::conceptual::View.allInstances()->excluding(self)
+	      ->forAll(cv | cv.getViewIdentity() <> cvIdentity
+	    	)
+  
+    /*
+     * The each View shall be unique.  Uniqueness is determined by 
+     * number, multiplicity, type and context of its ProjectedCharacteristics.
+    */
+    inv viewIsUnique2: 
+    	true
+
+  context Characteristic
+  
+      /*
+     * A helper method that returns the contribution that
+     * a Characteristic makes to an Entity's identity.
+    */
+  	def: getIdentityContribution() : Sequence(OclAny) =
+		let type : face::conceptual::ComposableElement =
+			if self.oclIsTypeOf(face::conceptual::Composition)
+			then
+				self.oclAsType(face::conceptual::Composition).type
+			else
+				self.oclAsType(face::conceptual::AssociatedEntity).type
+			endif
+		in 
+	
+		Sequence{type, self.upperBound, self.lowerBound}
+
+  context Composition
+    /* 
+     * For conceptual, logical and platform Compositions the lowerBound 
+     * shall be less than or equal to upperBound. 
+    */
+    inv lowerBound_LTE_UpperBound: 
+      self.upperBound <> -1 implies self.lowerBound <= self.upperBound
+    /* 
+     * For conceptual, logical and platform Compositions, upperBound shall
+     * be == -1 or >= 1
+    */
+    inv upperBoundValid: 
+      self.upperBound = -1 or self.upperBound >= 1
+    /* 
+     * For conceptual, logical and platform Compositions, lowerBound shall 
+     * be >= zero 
+    */
+    inv lowerBoundValid: 
+      self.lowerBound  >= 0
+
+  context CharacteristicProjection
+	      
+    /*
+     * A helper method that returns the contribution that
+     * a Characteristic makes to an Entity's identity.
+    */
+  	def: getIdentityContribution() : Sequence(OclAny) =	
+		Sequence{self.projectedCharacteristic, self.path}
+		
+	/* 
+     * Helper method to remove first node from a sequence of strings
+    */
+	def: subSequenceStrings(s : Sequence(String)) : Sequence(String) =
+
+		if s->size() = 1 then s->select(false) else s->subSequence(2, s->size()) endif
+	
+	/* 
+     * Helper method to determine if a association path resolution and subsequent 
+     * path selectors are valid from a relative location.
+    */
+	def: associationPathResolutionValid(entity : face::conceptual::Entity, pathTokens : Sequence(String)) : Boolean =
+	
+		let currPathTokenSplit : Sequence(String) = 
+      Element::tokenizeString(pathTokens->first().replaceAll(']', ''),'[') in
+		let currPathTokenRolename : String = currPathTokenSplit->first() in
+		let currPathTokenAssociation : String = currPathTokenSplit->last() in
+		let allAssociations : Collection(face::conceptual::Association) = 
+			face::conceptual::Association.allInstances() in
+		
+		-- there should be exactly one Association with expected name
+		if (allAssociations->one(a | a.name = currPathTokenAssociation))
+		then (
+			let association : face::conceptual::Association = 
+				allAssociations->any(a | a.name = currPathTokenAssociation) in
+			
+			-- the Association should have exactly one AssociatedEntity with expected rolename
+			if association.associationEnd->one(c | c.rolename = currPathTokenRolename)
+			then (
+					
+				-- get the one AssociatedEntity with expected rolename
+				let comp : face::conceptual::AssociatedEntity =  
+					association.associationEnd->any(c | c.rolename = currPathTokenRolename) in
+			
+				-- composition is valid it it exist, has a type and the type is the current entity
+				let compTypeValid : Boolean = 
+					comp <> null and comp.type <> null and comp.type = entity in
+				
+				-- path is valid it current node is valid and all subsequent nodes are valid
+				compTypeValid and pathValid(association, subSequenceStrings(pathTokens))
+			)
+			else 
+				-- path is invalid if there is not exactly one AssociatedEntity
+				-- with expected rolename
+				false
+			endif
+		)
+		else 
+			-- path is invalid if there is not exactly one Association
+			-- with expected name
+			false
+		endif
+	
+	/* 
+     * Helper method to determine if a composition path resolution and subsequent
+     * path selectors are valid from a relative location.
+    */
+	def: compositionPathResolutionValid(entity : face::conceptual::Entity, pathTokens : Sequence(String)) : Boolean =
+		
+		-- there should be exactly one Characteristic with expected rolename
+		-- check if that Characteristic is a Composition
+		if entity.composition->one(rolename = pathTokens->first())
+		then (
+			-- get composition with expected rolename
+			let comp : face::conceptual::Composition =
+				entity.composition->any(rolename = pathTokens->first()) in
+				
+			-- get associatedEntity with expected rolename
+			let associatedEntity : face::conceptual::AssociatedEntity =
+				entity.composition->any(rolename = pathTokens->first()) in
+			
+			-- path is valid it current node is valid and all subsequent nodes are valid
+			self.pathValid(comp.type, subSequenceStrings(pathTokens))
+		)
+		else
+			-- Check if the Characteristic with expected rolename is an AssociatedEntity
+			if (entity.oclIsTypeOf(face::conceptual::Association) and
+				entity.oclAsType(face::conceptual::Association).
+					associationEnd->one(rolename = pathTokens->first())
+			)
+			then (					
+				-- get associatedEntity with expected rolename
+				let associatedEntity : face::conceptual::AssociatedEntity =
+					entity.oclAsType(face::conceptual::Association).
+						associationEnd->any(rolename = pathTokens->first()) in
+				
+				-- path is valid it current node is valid and all subsequent nodes are valid
+				self.pathValid(associatedEntity.type, subSequenceStrings(pathTokens))
+			)
+			else
+				-- path is invalid if there is not exactly 
+				-- one Characteristic with expected rolename
+				false
+			endif
+		endif
+	
+	/* 
+     * Helper method to determine it a path relative to a ComposableElement is valid
+    */
+	def: pathValid(ce : face::conceptual::ComposableElement, pathTokens : Sequence(String)) : Boolean =
+		
+		if (ce = null)
+		then
+			-- if ce is null then the path is invalid
+			false
+		else
+			if pathTokens->size() = 0
+			then
+				-- if there are no more path tokens then the projection is valid
+				true
+				
+			else (
+				-- more path tokens indicate this must be an entity
+				if ce.oclIsKindOf(face::conceptual::Entity)			
+				then (
+					let entity : face::conceptual::Entity = 
+						ce.oclAsType(face::conceptual::Entity) in
+					
+					-- association resolutions have a square brackets
+					if pathTokens->first().indexOf('[') > 0
+					then 
+						associationPathResolutionValid(entity, pathTokens)
+					else 
+						compositionPathResolutionValid(entity, pathTokens)
+					endif
+				)
+				else (
+					-- more path tokens indicate this must be an entity, 
+					-- if not then the path is invalid
+					false
+				)
+				endif
+			)
+			endif
+		endif
+	
+	/* 
+     * CharacteristicProjection must have a valid path.
+    */
+	inv characteristicProjectionPathValid:
+		let ce : face::conceptual::ComposableElement = 
+			self.projectedCharacteristic.oclAsType(face::conceptual::ComposableElement) in
+		let tokens : Sequence(String) = 
+			Element::tokenizeString(self.path.replaceAll('->', '.'), '.') in
+		
+		self.pathValid(ce, tokens)
+	
+	/* 
+     * CharacteristicProjection must have a valid path format.
+    */
+	inv characteristicProjectionValidFormat:
+	
+		self.path <> null implies 
+		
+		--remove all entity projection substrings (e.g. ".description")
+		let pathTmp1 = self.path.replaceAll('\\.[_a-zA-Z0-9]+', '') in
+		
+		--remove all entity projection substrings (e.g. "->description[A1]")
+		let pathTmp2 = pathTmp1.replaceAll('->[_a-zA-Z0-9]+\\[[_a-zA-Z0-9]+\\]', '') in
+			
+		pathTmp2.size() = 0
+
+  context InformationElement
+    /* 
+     * Information Elements will be deprecated in future versions of FACE.
+    */
+    inv informationElementDepricated: 
+      false
+      
+endpackage
