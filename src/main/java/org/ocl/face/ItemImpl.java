@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.ocl.face.uop.FaceUopPackage;
 
-public abstract class ItemImpl extends EObjectImpl implements Item {
+public  class ItemImpl extends EObjectImpl implements Item {
     protected ItemImpl() {
         super();
     }
