@@ -260,7 +260,7 @@
       </element>
       <element xmi:type="uop:PlatformSpecificComponent" xmi:id="32704745-46e9-49de-9578-f1cf3e7c6386" name="gps_sensor_pss" partitionType="ARINC653" notes="">
         <port xmi:type="uop:MessagePort" xmi:id="ac9562df-7976-49c6-9d53-f4ca5b0516b2" name="gps_location_publisher" messageType="5f5307ce-323a-4e11-8605-278d6a441fc6" messageExchangeType="OutboundMessage"/>
-        <alias xmi:id="f68f84d7-f0d0-46ee-8532-0c5b30aswknd" name="boolean"/>
+        <alias xmi:id="f68f84d7-f0d0-46ee-8532-0c5b30aswknd" name="ff"/>
       </element>
     </uopModel>
   </uopModel>

@@ -9,6 +9,7 @@ import org.eclipse.ocl.ecore.EcoreEnvironmentFactory;
 import org.eclipse.ocl.ecore.OCL;
 import org.eclipse.ocl.expressions.OCLExpression;
 import org.ocl.face.common.FacePackage;
+import org.ocl.face.conceptual.FaceConceptualPackage;
 import org.ocl.face.logical.FaceLogicalPackage;
 import org.ocl.face.uop.FaceUopFactory;
 import org.ocl.face.uop.FaceUopPackage;
@@ -22,8 +23,10 @@ public class FaceTest {
         Alias alias = FaceUopFactory.eINSTANCE.createAlias();
         EPackage.Registry registry = new EPackageRegistryImpl();
     //    registry.put(FaceUopPackage.eNS_PREFIX, FaceUopPackage.eINSTANCE);
+        registry.put(FaceConceptualPackage.eNS_PREFIX, FaceConceptualPackage.eINSTANCE);
         registry.put(FacePackage.eNS_PREFIX, FacePackage.eINSTANCE);
         registry.put(FaceLogicalPackage.eNS_PREFIX, FaceLogicalPackage.eINSTANCE);
+
         EcoreEnvironmentFactory environmentFactory = new EcoreEnvironmentFactory(registry);
         OCL ocl = OCL.newInstance(environmentFactory);
 

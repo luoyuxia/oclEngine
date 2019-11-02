@@ -1,4 +1,4 @@
-package org.ocl.face.logical;
+package org.ocl.face.logical.model;
 
 import org.ocl.extlibrary.impl.ItemImpl;
 

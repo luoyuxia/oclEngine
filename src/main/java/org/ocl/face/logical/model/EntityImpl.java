@@ -1,14 +1,15 @@
-package org.ocl.face.logical;
+package org.ocl.face.logical.model;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.ocl.extlibrary.impl.ItemImpl;
+import org.ocl.face.logical.FaceLogicalPackage;
 
-public class EntityImpl extends ItemImpl implements Entity{
+public class EntityImpl extends ComposableElementImpl implements Entity{
     protected static final EList<Composition> defaultComposition = null;
     protected EList<Composition> compositions = defaultComposition;
+    private org.ocl.face.conceptual.model.Entity realizes;
     @Override
     protected EClass eStaticClass() {
         return FaceLogicalPackage.Literals.ENTITY;
@@ -30,12 +31,30 @@ public class EntityImpl extends ItemImpl implements Entity{
         }
     }
 
+    @Override
+    public org.ocl.face.conceptual.model.Entity getRealizes() {
+        return realizes;
+    }
+
+    @Override
+    public void setRealizes(org.ocl.face.conceptual.model.Entity value) {
+        org.ocl.face.conceptual.model.Entity old = realizes;
+        this.realizes = value;
+        if(eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this,
+                    Notification.SET, FaceLogicalPackage.ENTITY_REALIZES,
+                    old, realizes));
+        }
+    }
+
 
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case FaceLogicalPackage.ENTITY_COMPOSITION:
                 return getComposition();
+            case FaceLogicalPackage.ENTITY_REALIZES:
+                return getRealizes();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -45,6 +64,9 @@ public class EntityImpl extends ItemImpl implements Entity{
         switch (featureID) {
             case FaceLogicalPackage.ENTITY_COMPOSITION:
                 setComposition((EList<Composition>) newValue);
+                return;
+            case FaceLogicalPackage.ENTITY_REALIZES:
+                setRealizes((org.ocl.face.conceptual.model.Entity)newValue);
                 return;
         }
         super.eSet(featureID, newValue);

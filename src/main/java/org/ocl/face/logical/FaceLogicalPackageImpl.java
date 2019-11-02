@@ -2,6 +2,9 @@ package org.ocl.face.logical;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.ocl.face.conceptual.FaceConceptualFactory;
+import org.ocl.face.conceptual.FaceConceptualPackage;
+import org.ocl.face.logical.model.*;
 import org.ocl.face.logical.validator.ConversionValidator;
 
 public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalPackage{
@@ -17,6 +20,8 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
     private EClass characteristicEClass = null;
     private EClass unitEClass = null;
     private EClass frameOfReferenceEClass = null;
+    private EClass composableEClass = null;
+    private EClass measurementEClass = null;
 
     private static boolean isInited = false;
     private FaceLogicalPackageImpl() {
@@ -56,6 +61,11 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
 
         compositionEClass = createEClass(COMPOSITION);
         createEAttribute(compositionEClass, COMPOSITION_ROLE_NAME);
+        createEAttribute(compositionEClass, COMPOSITION_LOWER_BOUND);
+        createEAttribute(compositionEClass, COMPOSITION_UPPER_BOUND);
+        createEReference(compositionEClass, COMPOSITION_REALIZES);
+        createEReference(compositionEClass, COMPOSITION_TYPE);
+
 
         constraintEClass = createEClass(CONSTRAINT);
 
@@ -69,14 +79,22 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
 
         entityEClass = createEClass(ENTITY);
         createEReference(entityEClass, ENTITY_COMPOSITION);
+        createEReference(entityEClass, ENTITY_REALIZES);
 
         informationElementEClass = createEClass(INFORMATIONELEMENT);
+        createEReference(informationElementEClass, INFORMATION_ELEMENT_REALIZES);
 
         characteristicEClass = createEClass(CHARACTERISTIC);
         createEAttribute(characteristicEClass, CHARACTERISTIC_ROLE_NAME);
 
         unitEClass = createEClass(UNIT);
         frameOfReferenceEClass = createEClass(FRAME_OF_REFERENCE);
+
+        composableEClass = createEClass(COMPOSABLE_ELEMENT);
+        createEReference(composableEClass, COMPOSABLE_REALIZES);
+
+        measurementEClass = createEClass(MEASUREMENT);
+        createEReference(measurementEClass, MEASUREMENT_REALIZES);
 
     }
 
@@ -93,11 +111,14 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
                 !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getPath(), ecorePackage.getEString(), "path", null, 0, 1,
                 CharacteristicProjection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
         initEReference(getAssociationComposition(), getComposition(),
                 null, "composition", null, 0, -1,
                 Characteristic.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+
+
+
         initEReference(getAssociationEntity(), this.getCharacteristic(),
                 null, "associatedEntity", null, 0, -1,
                 Characteristic.class,
@@ -105,8 +126,20 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
 
 
         initEClass(compositionEClass, Composition.class, "Composition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getRoleName(), ecorePackage.getEString(), "rolename", null, 0, 1,
-                Composition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getCompositionRoleName(), ecorePackage.getEString(), "rolename", null, 0, 1,
+                Composition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getCompositionLowerBound(), ecorePackage.getEDouble(), "lowerBound", null, 0, 1,
+                Composition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getCompositionUpperBound(), ecorePackage.getEDouble(), "upperBound", null, 0, 1,
+                Composition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getCompositionRealizes(), getComposition(), null, "realizes", null, 0, 1,
+                org.ocl.face.conceptual.model.Composition.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+                IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getCompositionType(), getComposition(), null, "type", null, 0, 1,
+                ComposableElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+                IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 
         initEClass(constraintEClass, Constraint.class, "Constraint", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -135,10 +168,20 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
         initEClass(entityEClass, Entity.class, "Entity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getEntityComposition(), this.getComposition(),
                 null, "composition", null, 0, -1,
-                Composition.class,
+                Entity.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
+        initEReference(getEntityRealizes(), FaceConceptualPackage.Literals.ENTITY,
+                null, "realizes", null, 0, -1,
+                Entity.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+
         initEClass(informationElementEClass, InformationElement.class, "InformationElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getInformationRealizes(), FaceConceptualPackage.Literals.INFORMATION_ELEMENT,
+                null, "realizes", null, 0, -1,
+                InformationElement.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(characteristicEClass, Characteristic.class, "Characteristic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getCharacteristicRoleName(), ecorePackage.getEString(), "rolename", null, 0, 1,
@@ -148,6 +191,15 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
 
         initEClass(unitEClass, Unit.class, "Unit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEClass(frameOfReferenceEClass, FrameOfReference.class, "FrameOfReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(composableEClass, ComposableElement.class,"ComposableElement",  !IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(measurementEClass, Measurement.class, "Measurement", !IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getMeasurementRealizes(), FaceConceptualPackage.Literals.OBSERVABLE,
+                null, "realizes", null, 0, -1,
+                Measurement.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     }
 
     /**
@@ -207,6 +259,10 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
         return (EReference) entityEClass.getEStructuralFeature(0);
     }
 
+    public EReference getEntityRealizes() {
+        return (EReference) entityEClass.getEStructuralFeature(1);
+    }
+
     public EReference getAssociationComposition() {
         return (EReference) associationEClass.getEStructuralFeature(0);
     }
@@ -223,9 +279,34 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
         return (EReference) conversionEClass.getEStructuralFeature(1);
     }
 
-    public EAttribute getRoleName() {
+    public EAttribute getCompositionRoleName() {
         return (EAttribute) compositionEClass.getEStructuralFeature(0);
     }
+
+    public EAttribute getCompositionLowerBound() {
+        return (EAttribute) compositionEClass.getEStructuralFeature(1);
+    }
+
+    public EAttribute getCompositionUpperBound() {
+        return (EAttribute) compositionEClass.getEStructuralFeature(2);
+    }
+
+    public EReference getCompositionRealizes() {
+        return (EReference) compositionEClass.getEStructuralFeature(3);
+    }
+
+    public EReference getCompositionType() {
+        return (EReference) compositionEClass.getEStructuralFeature(4);
+    }
+
+    public EReference getInformationRealizes() {
+        return (EReference) informationElementEClass.getEStructuralFeature(0);
+    }
+
+    public EReference getMeasurementRealizes() {
+        return (EReference) measurementEClass.getEStructuralFeature(0);
+    }
+
 
     public EAttribute getPath() {
         return (EAttribute) characteristicProjectionEClass.getEStructuralFeature(0);
@@ -258,6 +339,16 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
     @Override
     public EClass getFrameOfReference() {
         return frameOfReferenceEClass;
+    }
+
+    @Override
+    public EClass getComposableElement() {
+        return composableEClass;
+    }
+
+    @Override
+    public EClass getMeasurement() {
+        return measurementEClass;
     }
 
     public EOperation getConversionOperation() {

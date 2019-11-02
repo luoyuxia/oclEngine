@@ -3,6 +3,7 @@ package org.ocl.face.logical;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+import org.ocl.face.logical.model.*;
 
 public class FaceLogicalFactoryImpl extends EFactoryImpl implements FaceLogicalFactory {
     public static FaceLogicalFactory init() {
@@ -66,4 +67,11 @@ public class FaceLogicalFactoryImpl extends EFactoryImpl implements FaceLogicalF
     public Characteristic createCharacteristic() {
         return new CharacteristicImpl();
     }
+
+    @Override
+    public Measurement createMeasurement() {
+        return new MeasurementImpl();
+    }
+
+
 }

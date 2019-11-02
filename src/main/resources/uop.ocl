@@ -2,20 +2,6 @@ import face : 'http://www.opengroup.us/face/1.0#/'
 
 package face::uop
 
-  context Association
-    /*
-     * Every face::logical::Characteristic within the scope
-     * of an Association must have a unique name
-    */
-    inv allCharacteristicsHaveUniqueRolename:
-      let compositions: String =
-      	self->collect(composition)->collect(c|c.oclAsType(face::logical::Characteristic)) in
-      let associatedEntities: String =
-      	self->collect(associatedEntity)->collect(c|c.oclAsType(face::logical::Characteristic)) in
-	  let characteristics: Set(face::logical::Characteristic) =
-	  	compositions->union(associatedEntities) in
-	  characteristics->isUnique(rolename)
-
   context Alias
 	
 	/*

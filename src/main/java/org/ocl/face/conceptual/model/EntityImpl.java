@@ -1,6 +1,4 @@
 package org.ocl.face.conceptual.model;
 
-import org.ocl.extlibrary.impl.ItemImpl;
-
-public class EntityImpl extends ItemImpl implements Entity {
+public class EntityImpl extends CompositionImpl implements Entity {
 }

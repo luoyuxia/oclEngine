@@ -8,6 +8,8 @@ import org.eclipse.ocl.ecore.Constraint;
 import org.eclipse.ocl.ecore.EcoreEnvironmentFactory;
 import org.eclipse.ocl.ecore.OCL;
 import org.ocl.face.XmlItem;
+import org.ocl.face.conceptual.FaceConceptualPackage;
+import org.ocl.face.logical.FaceLogicalPackage;
 import org.ocl.face.uop.FaceUopPackage;
 import org.ocl.face.xml.FaceXmlParser;
 import org.ocl.service.OclService;
@@ -24,6 +26,8 @@ public class OclServiceImpl implements OclService {
 
     public OclServiceImpl() {
         EPackage.Registry registry = new EPackageRegistryImpl();
+        registry.put(FaceConceptualPackage.eNS_PREFIX, FaceConceptualPackage.eINSTANCE);
+        registry.put(FaceLogicalPackage.eNS_PREFIX, FaceLogicalPackage.eINSTANCE);
         registry.put(FaceUopPackage.eNS_PREFIX, FaceUopPackage.eINSTANCE);
         EcoreEnvironmentFactory environmentFactory = new EcoreEnvironmentFactory(registry);
         ocl = OCL.newInstance(environmentFactory);

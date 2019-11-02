@@ -1,6 +1,7 @@
 package org.ocl.face.logical;
 
 import org.eclipse.emf.ecore.EFactory;
+import org.ocl.face.logical.model.*;
 
 public interface FaceLogicalFactory extends EFactory {
     FaceLogicalFactory eINSTANCE = FaceLogicalFactoryImpl.init();
@@ -22,5 +23,7 @@ public interface FaceLogicalFactory extends EFactory {
     InformationElement createInformationElement();
 
     Characteristic createCharacteristic();
+
+    Measurement createMeasurement();
 
 }

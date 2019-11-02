@@ -5,12 +5,12 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-public class FaceUopUopPackageImpl extends EPackageImpl implements FaceUopPackage {
+public class FaceUopPackageImpl extends EPackageImpl implements FaceUopPackage {
     private EClass aliasEClass = null;
     private EClass itemEClass = null;
     private EClass aliasCopyEClass = null;
 
-    private FaceUopUopPackageImpl() {
+    private FaceUopPackageImpl() {
         super(eNS_URI, FaceUopFactoryImpl.eINSTANCE);
     }
 
@@ -18,7 +18,7 @@ public class FaceUopUopPackageImpl extends EPackageImpl implements FaceUopPackag
         if (isInited)
             return (FaceUopPackage) Registry.INSTANCE.getEPackage(FaceUopPackage.eNS_URI);
         Object registeredFacePackage = EPackage.Registry.INSTANCE.get(eNS_URI);
-        FaceUopUopPackageImpl theFacePackage = registeredFacePackage instanceof FaceUopUopPackageImpl ? (FaceUopUopPackageImpl) registeredFacePackage : new FaceUopUopPackageImpl();
+        FaceUopPackageImpl theFacePackage = registeredFacePackage instanceof FaceUopPackageImpl ? (FaceUopPackageImpl) registeredFacePackage : new FaceUopPackageImpl();
         isInited = true;
         theFacePackage.createPackageContents();
 

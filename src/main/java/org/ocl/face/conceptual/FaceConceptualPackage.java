@@ -16,6 +16,10 @@ public interface FaceConceptualPackage extends EPackage {
 
     int OBSERVABLE = 3;
 
+    int COMPOSITION_LOWER_BOUND = 0;
+    int COMPOSITION_UPPER_BOUND = 1;
+    int COMPOSITION_TYPE = 2;
+
     FaceConceptualPackage eINSTANCE = FaceConceptualPackageImpl.init();
 
     interface Literals {

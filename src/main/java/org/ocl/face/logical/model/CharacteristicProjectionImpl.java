@@ -1,9 +1,10 @@
-package org.ocl.face.logical;
+package org.ocl.face.logical.model;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.ocl.extlibrary.impl.ItemImpl;
+import org.ocl.face.logical.FaceLogicalPackage;
 
 public class CharacteristicProjectionImpl extends ItemImpl implements CharacteristicProjection {
     private String path;
