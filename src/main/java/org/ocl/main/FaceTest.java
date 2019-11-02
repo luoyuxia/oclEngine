@@ -11,9 +11,8 @@ import org.eclipse.ocl.expressions.OCLExpression;
 import org.ocl.face.common.FacePackage;
 import org.ocl.face.conceptual.FaceConceptualPackage;
 import org.ocl.face.logical.FaceLogicalPackage;
-import org.ocl.face.uop.FaceUopFactory;
-import org.ocl.face.uop.FaceUopPackage;
 import org.ocl.face.uop.Alias;
+import org.ocl.face.uop.FaceUopFactory;
 
 import java.io.InputStream;
 import java.util.List;

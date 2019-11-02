@@ -3,7 +3,7 @@ package org.ocl.face.logical.model;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.ocl.extlibrary.impl.ItemImpl;
+import org.ocl.face.ItemImpl;
 import org.ocl.face.logical.FaceLogicalPackage;
 
 public class CompositionImpl extends ItemImpl implements Composition {
@@ -29,7 +29,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         roleName = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.COMPOSITION_ROLE_NAME,
+                    Notification.SET, 0,
                     oldName, roleName));
         }
     }
@@ -45,7 +45,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         lowerBound = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.COMPOSITION_LOWER_BOUND,
+                    Notification.SET, 1,
                     old, lowerBound));
         }
     }
@@ -61,7 +61,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         upperBound = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.COMPOSITION_UPPER_BOUND,
+                    Notification.SET, 2,
                     old, upperBound));
         }
     }
@@ -77,7 +77,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         realizes = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.COMPOSITION_REALIZES,
+                    Notification.SET, 3,
                     old, realizes));
         }
     }
@@ -93,7 +93,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         type = value;
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.COMPOSITION_TYPE,
+                    Notification.SET, 4,
                     old, type));
         }
     }
@@ -101,15 +101,15 @@ public class CompositionImpl extends ItemImpl implements Composition {
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case FaceLogicalPackage.COMPOSITION_ROLE_NAME:
+            case 0:
                 return getRoleName();
-            case FaceLogicalPackage.COMPOSITION_REALIZES:
-                return getRealizes();
-            case FaceLogicalPackage.COMPOSITION_LOWER_BOUND:
+            case 1:
                 return getLowerBound();
-            case FaceLogicalPackage.COMPOSITION_UPPER_BOUND:
+            case 2:
                 return getUpperBound();
-            case FaceLogicalPackage.COMPOSITION_TYPE:
+            case 3:
+                return getRealizes();
+            case 4:
                 return getType();
 
         }
@@ -119,19 +119,19 @@ public class CompositionImpl extends ItemImpl implements Composition {
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case FaceLogicalPackage.COMPOSITION_ROLE_NAME:
+            case 0:
                 setRoleName((String)newValue);
                 return;
-            case FaceLogicalPackage.COMPOSITION_REALIZES:
+            case 1:
                 setRealizes((org.ocl.face.conceptual.model.Composition) newValue);
                 return;
-            case FaceLogicalPackage.COMPOSITION_LOWER_BOUND:
+            case 2:
                 setLowerBound((double) newValue);
                 return;
-            case FaceLogicalPackage.COMPOSITION_UPPER_BOUND:
+            case 3:
                 setUpperBound((double) newValue);
                 return;
-            case FaceLogicalPackage.COMPOSITION_TYPE:
+            case 4:
                 setType((ComposableElement) newValue);
                 return;
         }

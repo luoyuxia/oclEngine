@@ -26,4 +26,8 @@ public interface FaceLogicalFactory extends EFactory {
 
     Measurement createMeasurement();
 
+    FrameOfReference createFrameOfReference();
+
+    Unit createUnit();
+
 }

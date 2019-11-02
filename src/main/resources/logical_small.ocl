@@ -1,0 +1,21 @@
+import face : 'http://www.opengroup.us/face/1.0#/'
+
+package face::logical
+
+  context Composition
+	inv logicalEntityConsistentWithConceptual:
+		let realizedComposition: face::conceptual::Composition = self.realizes in
+		let type: face::logical::ComposableElement = self.type in
+		if type = null then
+			false
+		else
+		if type.oclIsKindOf(face::logical::Entity) then
+			let entityType: face::logical::Entity = type.oclAsType(face::logical::Entity) in
+			let conceptualType: face::conceptual::Entity = entityType.realizes in
+			realizedComposition.type = conceptualType
+		else
+		    false
+		endif
+		endif
+
+endpackage

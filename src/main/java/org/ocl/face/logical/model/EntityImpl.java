@@ -26,7 +26,7 @@ public class EntityImpl extends ComposableElementImpl implements Entity{
         this.compositions = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.ENTITY_COMPOSITION,
+                    Notification.SET, 0,
                     oldComposition, compositions));
         }
     }
@@ -42,7 +42,7 @@ public class EntityImpl extends ComposableElementImpl implements Entity{
         this.realizes = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceLogicalPackage.ENTITY_REALIZES,
+                    Notification.SET, 1,
                     old, realizes));
         }
     }
@@ -51,9 +51,9 @@ public class EntityImpl extends ComposableElementImpl implements Entity{
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case FaceLogicalPackage.ENTITY_COMPOSITION:
+            case 0:
                 return getComposition();
-            case FaceLogicalPackage.ENTITY_REALIZES:
+            case 1:
                 return getRealizes();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -62,10 +62,10 @@ public class EntityImpl extends ComposableElementImpl implements Entity{
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case FaceLogicalPackage.ENTITY_COMPOSITION:
+            case 0:
                 setComposition((EList<Composition>) newValue);
                 return;
-            case FaceLogicalPackage.ENTITY_REALIZES:
+            case 1:
                 setRealizes((org.ocl.face.conceptual.model.Entity)newValue);
                 return;
         }

@@ -4,7 +4,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.ocl.extlibrary.impl.ItemImpl;
+import org.ocl.face.ItemImpl;
 import org.ocl.face.logical.FaceLogicalPackage;
 
 public class AssociationImpl extends ItemImpl implements Association {

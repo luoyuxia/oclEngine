@@ -73,5 +73,15 @@ public class FaceLogicalFactoryImpl extends EFactoryImpl implements FaceLogicalF
         return new MeasurementImpl();
     }
 
+    @Override
+    public FrameOfReference createFrameOfReference() {
+        return new FrameOfReferenceImpl();
+    }
+
+    @Override
+    public Unit createUnit() {
+        return new UnitImpl();
+    }
+
 
 }

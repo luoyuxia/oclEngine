@@ -1,15 +1,20 @@
 package org.ocl.face.conceptual.model;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.ocl.extlibrary.impl.ItemImpl;
+import org.ocl.face.ItemImpl;
 import org.ocl.face.conceptual.FaceConceptualPackage;
 import org.ocl.face.logical.model.ComposableElement;
 
 public class CompositionImpl extends ItemImpl implements Composition {
-    private double lowerBound = 0.0;
-    private double upperBound = 0.0;
-    private ComposableElement type;
+    @Override
+    protected EClass eStaticClass() {
+        return FaceConceptualPackage.Literals.COMPOSITION;
+    }
+    protected double lowerBound = 0.0;
+    protected double upperBound = 0.0;
+    protected ComposableElement type;
 
     @Override
     public double getLowerBound() {
@@ -22,7 +27,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         lowerBound = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceConceptualPackage.COMPOSITION_LOWER_BOUND,
+                    Notification.SET, 0,
                     old, lowerBound));
         }
     }
@@ -38,7 +43,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         upperBound = value;
         if(eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceConceptualPackage.COMPOSITION_UPPER_BOUND,
+                    Notification.SET, 1,
                     old, upperBound));
         }
     }
@@ -54,7 +59,7 @@ public class CompositionImpl extends ItemImpl implements Composition {
         type = value;
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this,
-                    Notification.SET, FaceConceptualPackage.COMPOSITION_TYPE,
+                    Notification.SET, 2,
                     old, type));
         }
     }
@@ -62,13 +67,12 @@ public class CompositionImpl extends ItemImpl implements Composition {
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case FaceConceptualPackage.COMPOSITION_LOWER_BOUND:
+            case 0:
                 return getLowerBound();
-            case FaceConceptualPackage.COMPOSITION_UPPER_BOUND:
+            case 1:
                 return getUpperBound();
-            case FaceConceptualPackage.COMPOSITION_TYPE:
+            case 2:
                 return getType();
-
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -76,13 +80,15 @@ public class CompositionImpl extends ItemImpl implements Composition {
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case FaceConceptualPackage.COMPOSITION_LOWER_BOUND:
+            case 0:
                  setLowerBound((double)newValue);
                  return;
-            case FaceConceptualPackage.COMPOSITION_UPPER_BOUND:
+            case 1:
                 setUpperBound((double) newValue);
-            case FaceConceptualPackage.COMPOSITION_TYPE:
+                return;
+            case 2:
                 setType((ComposableElement) newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }

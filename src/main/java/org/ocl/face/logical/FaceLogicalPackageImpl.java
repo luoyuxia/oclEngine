@@ -2,7 +2,6 @@ package org.ocl.face.logical;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-import org.ocl.face.conceptual.FaceConceptualFactory;
 import org.ocl.face.conceptual.FaceConceptualPackage;
 import org.ocl.face.logical.model.*;
 import org.ocl.face.logical.validator.ConversionValidator;
@@ -132,6 +131,9 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
                 Composition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getCompositionUpperBound(), ecorePackage.getEDouble(), "upperBound", null, 0, 1,
                 Composition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+
+
         initEReference(getCompositionRealizes(), getComposition(), null, "realizes", null, 0, 1,
                 org.ocl.face.conceptual.model.Composition.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
@@ -166,14 +168,14 @@ public class FaceLogicalPackageImpl extends EPackageImpl implements FaceLogicalP
 
 
         initEClass(entityEClass, Entity.class, "Entity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getEntityComposition(), this.getComposition(),
+        initEReference(getEntityComposition(), getComposition(),
                 null, "composition", null, 0, -1,
-                Entity.class,
+                Composition.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
-        initEReference(getEntityRealizes(), FaceConceptualPackage.Literals.ENTITY,
-                null, "realizes", null, 0, -1,
-                Entity.class,
+        initEReference(getEntityRealizes(), getEntity(),
+                null, "realizes", null, 0, 1,
+                org.ocl.face.conceptual.model.Entity.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 

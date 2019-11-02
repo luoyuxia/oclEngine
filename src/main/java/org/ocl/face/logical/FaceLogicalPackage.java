@@ -54,7 +54,7 @@ public interface FaceLogicalPackage extends EPackage {
     int ENTITY_REALIZES = 14;
     int INFORMATION_ELEMENT_REALIZES = 15;
     int MEASUREMENT_REALIZES = 16;
-    int INFORMARION_ELEMENT_REALIZES = 17;
+
 
     // operation
     int OPERATION_CONVERSION_SOURCE_DESTINATION_IMPLIES = 0;
@@ -76,6 +76,8 @@ public interface FaceLogicalPackage extends EPackage {
         EClass CHARACTERISTIC = eINSTANCE.getCharacteristic();
         EClass COMPOSABLE = eINSTANCE.getComposableElement();
         EClass MEASUREMENT = eINSTANCE.getMeasurement();
+        EClass FRAME_OF_REFERENCE = eINSTANCE.getFrameOfReference();
+        EClass UNIT = eINSTANCE.getUnit();
     }
 
     EClass getItem();
@@ -105,5 +107,6 @@ public interface FaceLogicalPackage extends EPackage {
     EClass getComposableElement();
 
     EClass getMeasurement();
+
 
 }
